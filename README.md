@@ -168,3 +168,4 @@ Included tests:
 
 Interview script:
 - `docs/INTERVIEW_DEMO_3_5_MIN.md`
+- `docs/FINAL_INTERVIEW_ONE_PAGER.md`
