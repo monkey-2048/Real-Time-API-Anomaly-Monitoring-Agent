@@ -20,12 +20,13 @@ function fillTable(tableId, rows, mapRow) {
 
 async function refreshAll() {
   try {
-    const [health, metrics, observations, anomalies, summary] = await Promise.all([
+    const [health, metrics, observations, anomalies, summary, advice] = await Promise.all([
       getJson('/health'),
       getJson('/metrics'),
       getJson('/observations?limit=10'),
       getJson('/anomalies?limit=10'),
-      getJson('/report/summary')
+      getJson('/report/summary'),
+      getJson('/report/advice')
     ]);
 
     document.getElementById('totalObs').textContent = fmt(summary.total_observations);
@@ -35,6 +36,7 @@ async function refreshAll() {
 
     document.getElementById('summaryBox').textContent = JSON.stringify(summary, null, 2);
     document.getElementById('metricsBox').textContent = JSON.stringify(metrics, null, 2);
+    document.getElementById('adviceBox').textContent = JSON.stringify(advice, null, 2);
 
     fillTable('obsTable', observations, (r) => `
       <td>${fmt(r.observed_at)}</td>
@@ -58,6 +60,7 @@ async function refreshAll() {
     document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleString()}`;
   } catch (e) {
     document.getElementById('summaryBox').textContent = `Failed to load dashboard data. ${e.message}`;
+    document.getElementById('adviceBox').textContent = `Failed to load AI advice. ${e.message}`;
   }
 }
 

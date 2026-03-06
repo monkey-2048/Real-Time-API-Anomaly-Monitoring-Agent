@@ -76,6 +76,33 @@ class ObservationRepository:
         stmt = select(Observation).order_by(Observation.observed_at.desc()).limit(limit)
         return self.db.execute(stmt).scalars().all()
 
+    def latest_by_source(self, source: str) -> Observation | None:
+        stmt = (
+            select(Observation)
+            .where(Observation.source == source)
+            .order_by(Observation.observed_at.desc())
+            .limit(1)
+        )
+        return self.db.execute(stmt).scalar_one_or_none()
+
+    def latest_signal_snapshot(self) -> dict | None:
+        weather = self.latest_by_source("weather")
+        air = self.latest_by_source("air_quality")
+        if weather is None and air is None:
+            return None
+
+        ref = weather or air
+        return {
+            "location": ref.location,
+            "observed_at": ref.observed_at.isoformat(),
+            "temperature": weather.temperature if weather else None,
+            "humidity": weather.humidity if weather else None,
+            "wind_speed": weather.wind_speed if weather else None,
+            "pm25": air.pm25 if air else None,
+            "pm10": air.pm10 if air else None,
+            "aqi": air.aqi if air else None,
+        }
+
     def summary(self) -> dict:
         total = self.db.execute(select(func.count(Observation.id))).scalar_one()
         anomalies = self.db.execute(select(func.count(Observation.id)).where(Observation.is_anomaly == 1.0)).scalar_one()

@@ -7,7 +7,8 @@ from sqlalchemy.orm import Session
 from app.core.metrics import metrics
 from app.db.session import get_db_session
 from app.schemas.observation import ObservationOut
-from app.schemas.report import SummaryReport
+from app.schemas.report import AdviceResponse, SummaryReport
+from app.services.gemini_advice import GeminiAdviceService
 from app.services.report_service import ReportService
 from app.services.repository import ObservationRepository
 
@@ -61,3 +62,24 @@ def anomalies(
 def report_summary(db: Session = Depends(get_db_session)):
     repo = ObservationRepository(db)
     return ReportService(repo).summary()
+
+
+@router.get("/report/advice", response_model=AdviceResponse)
+async def report_advice(db: Session = Depends(get_db_session)):
+    repo = ObservationRepository(db)
+    snapshot = repo.latest_signal_snapshot()
+    if snapshot is None:
+        return AdviceResponse(
+            location="unknown",
+            observed_at="n/a",
+            model="fallback-rule",
+            advice="No observation data yet. Wait for scheduler ingestion or seed sample data.",
+        )
+
+    advice, model_name = await GeminiAdviceService().generate_advice(snapshot)
+    return AdviceResponse(
+        location=snapshot["location"],
+        observed_at=snapshot["observed_at"],
+        model=model_name,
+        advice=advice,
+    )

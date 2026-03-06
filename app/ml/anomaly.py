@@ -39,7 +39,6 @@ class AnomalyService:
             float(obs.pm25 or 0.0),
             float(obs.pm10 or 0.0),
             float(obs.aqi or 0.0),
-            float(obs.source_latency_ms or 0.0),
         ]
 
     def fit(self, samples: list[ObservationIn]) -> None:

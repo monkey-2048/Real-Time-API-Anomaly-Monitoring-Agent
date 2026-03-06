@@ -11,3 +11,10 @@ class SummaryReport(BaseModel):
     avg_pm10: float | None
     avg_aqi: float | None
     note: str
+
+
+class AdviceResponse(BaseModel):
+    location: str
+    observed_at: str
+    model: str
+    advice: str

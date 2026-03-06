@@ -84,6 +84,11 @@ python scripts/seed_sample_data.py
   - stored anomalous observations
 - `GET /report/summary`
   - aggregate metrics + short status note
+- `GET /report/advice`
+  - Gemini-based environment advice from latest temperature/humidity/PM2.5 snapshot
+
+Gemini setup:
+- put your key into `.env` as `GEMINI_API_KEY=your_key_here`
 
 ## 8. Idempotency Design
 
