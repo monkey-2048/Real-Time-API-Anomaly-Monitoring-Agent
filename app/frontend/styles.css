@@ -1,0 +1,91 @@
+﻿:root {
+  --bg: #eef2f7;
+  --ink: #18222f;
+  --card: #ffffff;
+  --accent: #1663be;
+  --ok: #0f8c66;
+  --warn: #c04a22;
+  --line: #d7dee8;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+  background: radial-gradient(circle at 10% 0%, #dcecff 0%, var(--bg) 35%, #eaf4ef 100%);
+  color: var(--ink);
+}
+
+.hero {
+  background: linear-gradient(130deg, #0f3d7a, #1c7f6f);
+  color: #fff;
+  padding: 28px 20px;
+}
+.hero-inner { max-width: 1200px; margin: 0 auto; }
+.hero h1 { margin: 0 0 6px; font-size: 2rem; letter-spacing: 0.4px; }
+.hero p { margin: 0 0 16px; opacity: 0.9; }
+.controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+button {
+  border: 0;
+  background: #ffd166;
+  color: #2a2500;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.container { max-width: 1200px; margin: 18px auto 28px; padding: 0 14px; }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+}
+.card h3 { margin: 0 0 6px; font-size: 0.9rem; color: #4c5b70; }
+.card p { margin: 0; font-size: 1.45rem; font-weight: 700; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+}
+.panel h2 { margin: 0 0 10px; font-size: 1rem; }
+
+pre {
+  margin: 0;
+  background: #f7fafc;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+}
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+th, td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; }
+th { background: #f6f9fc; }
+
+.badge { display: inline-block; padding: 3px 7px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; }
+.badge.ok { background: #e6f7f2; color: var(--ok); }
+.badge.alert { background: #ffe9e2; color: var(--warn); }
+
+@media (max-width: 600px) {
+  .hero h1 { font-size: 1.5rem; }
+  .grid { grid-template-columns: 1fr; }
+}

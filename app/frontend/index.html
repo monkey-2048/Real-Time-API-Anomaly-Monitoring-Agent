@@ -1,0 +1,84 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EnvPulse Dashboard</title>
+  <link rel="stylesheet" href="/frontend/styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <h1>EnvPulse Live Monitor</h1>
+      <p>Real-time weather + air quality pipeline view</p>
+      <div class="controls">
+        <button id="refreshBtn">Refresh Now</button>
+        <span id="lastUpdated">Last updated: -</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="cards">
+      <article class="card">
+        <h3>Total Observations</h3>
+        <p id="totalObs">-</p>
+      </article>
+      <article class="card">
+        <h3>Anomalies</h3>
+        <p id="anomalyCount">-</p>
+      </article>
+      <article class="card">
+        <h3>Anomaly Ratio</h3>
+        <p id="anomalyRatio">-</p>
+      </article>
+      <article class="card">
+        <h3>Queue Length</h3>
+        <p id="queueLength">-</p>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <h2>Summary</h2>
+        <pre id="summaryBox">Loading...</pre>
+      </article>
+      <article class="panel">
+        <h2>Metrics</h2>
+        <pre id="metricsBox">Loading...</pre>
+      </article>
+    </section>
+
+    <section class="grid">
+      <article class="panel">
+        <h2>Latest Observations</h2>
+        <div class="table-wrap">
+          <table id="obsTable">
+            <thead>
+              <tr>
+                <th>Time</th><th>Source</th><th>Temp</th><th>Humidity</th><th>PM10</th><th>AQI</th><th>Anomaly</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+      <article class="panel">
+        <h2>Latest Anomalies</h2>
+        <div class="table-wrap">
+          <table id="anomalyTable">
+            <thead>
+              <tr>
+                <th>Time</th><th>Source</th><th>Score</th><th>Temp</th><th>PM10</th><th>AQI</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="/frontend/app.js"></script>
+</body>
+</html>
