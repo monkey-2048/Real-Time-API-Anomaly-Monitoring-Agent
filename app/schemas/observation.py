@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ObservationIn(BaseModel):
@@ -45,5 +45,4 @@ class ObservationOut(BaseModel):
     anomaly_score: float | None
     is_anomaly: bool
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
