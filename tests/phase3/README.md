@@ -1,6 +1,6 @@
 ﻿# Phase 3 Tests
 
-Recommended phase3 scope:
-- docker end-to-end smoke checks
-- service startup/health sequencing checks
-- retry/fallback behavior verification under injected failures
+Current phase3 coverage:
+- docker end-to-end smoke check script (`scripts/e2e_docker_check.ps1`)
+- retry utility behavior test
+- adapter fallback test when air-quality source fails
