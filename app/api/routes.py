@@ -25,6 +25,11 @@ async def health(request: Request):
     }
 
 
+@router.get("/metrics")
+def get_metrics():
+    return metrics.snapshot()
+
+
 @router.get("/observations", response_model=list[ObservationOut])
 def observations(
     limit: int = Query(default=100, ge=1, le=500),

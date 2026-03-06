@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.api.routes import router
+from app.core.metrics import metrics
 from app.db.base import Base
 from app.db.session import get_db_session
 from app.schemas.observation import ObservationProcessResult
@@ -90,6 +91,20 @@ def test_health_endpoint_returns_queue_and_metrics(tmp_path):
     assert payload["status"] == "ok"
     assert payload["queue_length"] == 3
     assert "metrics" in payload
+
+
+def test_metrics_endpoint_returns_registry_snapshot(tmp_path):
+    client, _ = build_test_client(tmp_path)
+    metrics.incr("phase2_metrics_test")
+
+    response = client.get("/metrics")
+    assert response.status_code == 200
+    payload = response.json()
+    assert "counters" in payload
+    assert "latencies" in payload
+    assert "gauges" in payload
+    assert "events" in payload
+    assert payload["counters"]["phase2_metrics_test"] >= 1
 
 
 def test_observations_and_anomalies_endpoints(tmp_path):

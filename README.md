@@ -71,6 +71,8 @@ See [docs/ARCHITECTURE_PLAN.md](docs/ARCHITECTURE_PLAN.md) for detailed responsi
 
 - `GET /health`
   - queue length + in-memory metrics snapshot
+- `GET /metrics`
+  - runtime metrics snapshot (counters/latencies/gauges/events)
 - `GET /observations?limit=100`
   - latest stored observations
 - `GET /anomalies?limit=100`
@@ -108,7 +110,7 @@ Tracked examples:
 - worker processed/failed
 - anomaly detected count
 
-`GET /health` exposes snapshot for quick runtime diagnosis.
+`GET /health` and `GET /metrics` expose runtime diagnosis snapshots.
 
 ## 12. Anomaly Detection Approach
 
@@ -139,7 +141,14 @@ Tracked examples:
 4. Export metrics to Prometheus and logs to centralized collector.
 5. Add auth/rate-limit for report endpoints.
 
-## 15. Tests
+## 15. Demo Script
+
+After services are running, quick-check endpoints:
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/demo.ps1
+```
+
+## 16. Tests
 
 Run:
 ```bash
@@ -150,3 +159,4 @@ Included tests:
 - normalization mapping tests
 - anomaly service tests (cold-start + fit/score)
 - idempotent DB upsert integration-style test
+

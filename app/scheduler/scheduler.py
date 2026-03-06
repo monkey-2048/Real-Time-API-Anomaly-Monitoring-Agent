@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import time
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
@@ -27,6 +28,9 @@ class ProducerScheduler:
         metrics.incr("jobs_enqueued")
 
     async def collect_once(self) -> None:
+        started = time.perf_counter()
+        metrics.mark_event("scheduler_last_run_started_at")
+
         lat = settings.default_latitude
         lon = settings.default_longitude
         location = settings.default_location_name
@@ -50,6 +54,12 @@ class ProducerScheduler:
             metrics.incr("producer_round_failed")
         else:
             metrics.incr("producer_round_success")
+
+        elapsed_ms = (time.perf_counter() - started) * 1000.0
+        metrics.observe_ms("producer_round_latency", elapsed_ms)
+        metrics.set_gauge("producer_last_round_success_count", float(success))
+        metrics.mark_event("scheduler_last_run_finished_at")
+
         logger.info("producer round complete success=%s", success)
 
     def start(self) -> None:
