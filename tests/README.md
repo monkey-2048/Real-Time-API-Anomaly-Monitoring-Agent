@@ -3,6 +3,7 @@
 - `tests/phase1/unit/`: phase 1 unit tests
 - `tests/phase1/integration/`: phase 1 integration-style tests
 - `tests/phase2/`: phase 2 tests (new features)
+- `tests/phase3/`: phase 3 tests and e2e checklist
 
 Run all tests:
 ```bash
@@ -27,4 +28,9 @@ pytest -q tests/phase1/integration
 Run phase 2 only:
 ```bash
 pytest -q tests/phase2
+```
+
+Run phase 3 only:
+```bash
+pytest -q tests/phase3
 ```

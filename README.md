@@ -148,6 +148,11 @@ After services are running, quick-check endpoints:
 powershell -ExecutionPolicy Bypass -File scripts/demo.ps1
 ```
 
+Full Docker end-to-end smoke check:
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/e2e_docker_check.ps1
+```
+
 ## 16. Tests
 
 Run:
@@ -160,3 +165,6 @@ Included tests:
 - anomaly service tests (cold-start + fit/score)
 - idempotent DB upsert integration-style test
 - API integration tests for report/health endpoints
+
+Interview script:
+- `docs/INTERVIEW_DEMO_3_5_MIN.md`
