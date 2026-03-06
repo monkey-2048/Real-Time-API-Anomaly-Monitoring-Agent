@@ -55,6 +55,11 @@ See [docs/ARCHITECTURE_PLAN.md](docs/ARCHITECTURE_PLAN.md) for detailed responsi
    python scripts/run_scheduler.py
    ```
 
+Seed demo data (optional, useful when external APIs are unstable):
+```bash
+python scripts/seed_sample_data.py
+```
+
 ## 6. Run with Docker
 
 1. Copy env template:
