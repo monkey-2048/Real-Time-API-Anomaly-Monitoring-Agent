@@ -75,6 +75,7 @@ python scripts/seed_sample_data.py
    docker compose up --build
    ```
 3. API will be available at `http://127.0.0.1:18080`.
+4. Frontend dashboard will be available at `http://127.0.0.1:18080/frontend`.
 
 ## 7. API Endpoints
 
