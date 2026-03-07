@@ -34,7 +34,11 @@ Pipeline:
 
 ## 4. Folder Structure
 
-See [docs/ARCHITECTURE_PLAN.md](docs/ARCHITECTURE_PLAN.md) for detailed responsibilities.
+Main folders:
+- `app/` API, scheduler, worker, services, ML
+- `tests/` phase-based tests
+- `scripts/` helper scripts
+- `docker/` Dockerfiles
 
 ## 5. Setup (Local)
 
@@ -70,7 +74,7 @@ python scripts/seed_sample_data.py
    ```bash
    docker compose up --build
    ```
-3. API will be available at `http://localhost:8000`.
+3. API will be available at `http://127.0.0.1:18080`.
 
 ## 7. API Endpoints
 
@@ -136,46 +140,3 @@ Tracked examples:
 - lightweight and fast
 - no labels required
 - robust enough for interview-scale anomaly demo
-
-## 13. Trade-offs
-
-- In-memory metrics reset on process restart (simple, demo-friendly).
-- No distributed tracing stack (OpenTelemetry/Prometheus left for future).
-- No migration tool (Alembic) to keep prototype setup minimal.
-
-## 14. Production Upgrades (Next)
-
-1. Replace SQLite with PostgreSQL + Alembic migrations.
-2. Add dead-letter queue and structured retry policies per failure category.
-3. Persist model artifacts/versioning and add periodic retraining job.
-4. Export metrics to Prometheus and logs to centralized collector.
-5. Add auth/rate-limit for report endpoints.
-
-## 15. Demo Script
-
-After services are running, quick-check endpoints:
-```bash
-powershell -ExecutionPolicy Bypass -File scripts/demo.ps1
-```
-
-Full Docker end-to-end smoke check:
-```bash
-powershell -ExecutionPolicy Bypass -File scripts/e2e_docker_check.ps1
-```
-
-## 16. Tests
-
-Run:
-```bash
-pytest -q
-```
-
-Included tests:
-- normalization mapping tests
-- anomaly service tests (cold-start + fit/score)
-- idempotent DB upsert integration-style test
-- API integration tests for report/health endpoints
-
-Interview script:
-- `docs/INTERVIEW_DEMO_3_5_MIN.md`
-- `docs/FINAL_INTERVIEW_ONE_PAGER.md`

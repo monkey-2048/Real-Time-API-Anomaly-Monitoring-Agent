@@ -20,13 +20,12 @@ function fillTable(tableId, rows, mapRow) {
 
 async function refreshAll() {
   try {
-    const [health, metrics, observations, anomalies, summary, advice] = await Promise.all([
+    const [health, metrics, observations, anomalies, summary] = await Promise.all([
       getJson('/health'),
       getJson('/metrics'),
       getJson('/observations?limit=10'),
       getJson('/anomalies?limit=10'),
-      getJson('/report/summary'),
-      getJson('/report/advice')
+      getJson('/report/summary')
     ]);
 
     document.getElementById('totalObs').textContent = fmt(summary.total_observations);
@@ -36,7 +35,6 @@ async function refreshAll() {
 
     document.getElementById('summaryBox').textContent = JSON.stringify(summary, null, 2);
     document.getElementById('metricsBox').textContent = JSON.stringify(metrics, null, 2);
-    document.getElementById('adviceBox').textContent = JSON.stringify(advice, null, 2);
 
     fillTable('obsTable', observations, (r) => `
       <td>${fmt(r.observed_at)}</td>
@@ -60,10 +58,21 @@ async function refreshAll() {
     document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleString()}`;
   } catch (e) {
     document.getElementById('summaryBox').textContent = `Failed to load dashboard data. ${e.message}`;
-    document.getElementById('adviceBox').textContent = `Failed to load AI advice. ${e.message}`;
+  }
+}
+
+async function fetchAdvice() {
+  const box = document.getElementById('adviceBox');
+  box.textContent = 'Requesting AI advice...';
+  try {
+    const advice = await getJson('/report/advice');
+    box.textContent = JSON.stringify(advice, null, 2);
+  } catch (e) {
+    box.textContent = `Failed to load AI advice. ${e.message}`;
   }
 }
 
 document.getElementById('refreshBtn').addEventListener('click', refreshAll);
+document.getElementById('adviceBtn').addEventListener('click', fetchAdvice);
 refreshAll();
 setInterval(refreshAll, 15000);
