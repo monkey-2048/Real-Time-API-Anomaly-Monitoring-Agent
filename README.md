@@ -9,6 +9,7 @@ Key capabilities:
 - Producer/consumer architecture with Redis queue
 - Idempotent DB writes through unique composite key + upsert
 - Lightweight anomaly detection (`IsolationForest`) with cold-start heuristic fallback
+- Gemini API integration for environment advice based on latest temperature, humidity, and air-quality signals
 - Monitoring-minded logging and metrics counters
 - Dockerized API / worker / scheduler services
 
@@ -94,6 +95,8 @@ python scripts/seed_sample_data.py
 
 Gemini setup:
 - put your key into `.env` as `GEMINI_API_KEY=your_key_here`
+- endpoint: `GET /report/advice`
+- frontend: click `Get AI Advice` to request Gemini suggestions on demand
 
 ## 8. Idempotency Design
 
