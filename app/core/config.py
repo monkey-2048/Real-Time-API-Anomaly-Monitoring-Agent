@@ -30,8 +30,8 @@ class Settings(BaseSettings):
     http_timeout_seconds: float = 8.0
     http_retry_attempts: int = 3
 
-    anomaly_contamination: float = Field(default=0.12, ge=0.001, le=0.5)
-    anomaly_min_samples: int = 20
+    anomaly_contamination: float = Field(default=0.03, ge=0.001, le=0.5)
+    anomaly_min_samples: int = 40
 
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.0-flash"
