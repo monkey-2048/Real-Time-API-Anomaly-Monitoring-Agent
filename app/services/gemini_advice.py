@@ -38,6 +38,21 @@ class GeminiAdviceService:
             }
 
     @staticmethod
+    def _clean_advice_text(text: str) -> str:
+        lines = [line.strip() for line in text.splitlines() if line.strip()]
+        cleaned: list[str] = []
+        for line in lines:
+            if line.startswith(("* ", "- ", "• ")):
+                line = line[2:].strip()
+            if line and line[0].isdigit() and ". " in line[:4]:
+                line = line.split(". ", 1)[1].strip()
+            cleaned.append(line)
+
+        if not cleaned:
+            return text.strip()
+        return "\n".join(cleaned[:3])
+
+    @staticmethod
     def _fallback(snapshot: dict, rain_signal: dict) -> str:
         parts: list[str] = []
         temp = snapshot.get("temperature")
@@ -81,12 +96,12 @@ class GeminiAdviceService:
     def _prompt(snapshot: dict, rain_signal: dict) -> str:
         return (
             "You are a practical weather and air-quality assistant. "
-            "Return exactly 3 bullet points in English. "
+            "Return exactly 3 short lines in English plain text. "
             "Bullet 1: what to wear now. "
             "Bullet 2: rain recommendation (umbrella/raincoat yes or no with reason). "
             "Bullet 3: air quality precaution based on PM2.5/AQI. "
-            "Each bullet must be one complete sentence and directly actionable. "
-            "Do not include intro or conclusion.\n\n"
+            "Each line must be one complete sentence and directly actionable. "
+            "Do not use markdown, bullets, numbering, intro, or conclusion.\n\n"
             f"Location: {snapshot.get('location')}\n"
             f"Observed at (UTC): {snapshot.get('observed_at')}\n"
             f"Temperature C: {snapshot.get('temperature')}\n"
@@ -120,7 +135,7 @@ class GeminiAdviceService:
             ],
             "generationConfig": {
                 "temperature": 0.2,
-                "maxOutputTokens": 220,
+                "maxOutputTokens": 320,
             },
         }
 
@@ -142,6 +157,6 @@ class GeminiAdviceService:
             )
             if not advice:
                 return self._fallback(snapshot, rain_signal), "fallback-rule"
-            return advice.strip(), settings.gemini_model
+            return self._clean_advice_text(advice), settings.gemini_model
         except Exception:
             return self._fallback(snapshot, rain_signal), "fallback-rule"
