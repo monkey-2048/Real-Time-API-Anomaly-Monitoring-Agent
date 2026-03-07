@@ -170,9 +170,9 @@ Use these steps to explicitly verify key engineering requirements:
    - Observe logs and `GET /metrics`
    - Confirm fallback behavior is triggered and pipeline continues instead of full stop
 
-## 14. Demo Flow (Video / Live)
+## 14. Suggested Walkthrough
 
-Use this fixed order for a clean demo:
+Use this fixed order for a clear walkthrough:
 
 1. One-sentence project intro
 2. Architecture flow (`Scheduler -> Queue -> Worker -> DB -> API`)
