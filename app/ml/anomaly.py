@@ -19,19 +19,27 @@ class AnomalyResult:
 
 class AnomalyService:
     def __init__(self) -> None:
-        self._model = IsolationForest(
-            contamination=settings.anomaly_contamination,
-            random_state=42,
-            n_estimators=100,
-        )
-        self._is_fitted = False
+        self._models: dict[str, IsolationForest] = {}
+        self._fitted_sources: set[str] = set()
 
-    @property
-    def is_fitted(self) -> bool:
-        return self._is_fitted
+    def is_source_fitted(self, source: str) -> bool:
+        return source in self._fitted_sources
 
     @staticmethod
-    def _to_vector(obs: ObservationIn) -> list[float]:
+    def _vector_for_source(obs: ObservationIn) -> list[float]:
+        # Source-specific vectors avoid mixing weather-null and AQ-null features.
+        if obs.source == "weather":
+            return [
+                float(obs.temperature or 0.0),
+                float(obs.humidity or 0.0),
+                float(obs.wind_speed or 0.0),
+            ]
+        if obs.source == "air_quality":
+            return [
+                float(obs.pm25 or 0.0),
+                float(obs.pm10 or 0.0),
+                float(obs.aqi or 0.0),
+            ]
         return [
             float(obs.temperature or 0.0),
             float(obs.humidity or 0.0),
@@ -41,16 +49,26 @@ class AnomalyService:
             float(obs.aqi or 0.0),
         ]
 
-    def fit(self, samples: list[ObservationIn]) -> None:
-        if len(samples) < settings.anomaly_min_samples:
+    def fit(self, samples: list[ObservationIn], source: str) -> None:
+        source_samples = [s for s in samples if s.source == source]
+        if len(source_samples) < settings.anomaly_min_samples:
             return
-        x = np.array([self._to_vector(s) for s in samples])
-        self._model.fit(x)
-        self._is_fitted = True
+
+        x = np.array([self._vector_for_source(s) for s in source_samples])
+        model = IsolationForest(
+            contamination=settings.anomaly_contamination,
+            random_state=42,
+            n_estimators=100,
+        )
+        model.fit(x)
+        self._models[source] = model
+        self._fitted_sources.add(source)
 
     def score(self, observation: ObservationIn) -> AnomalyResult:
-        vector = np.array([self._to_vector(observation)])
-        if not self._is_fitted:
+        vector = np.array([self._vector_for_source(observation)])
+        model = self._models.get(observation.source)
+
+        if model is None:
             # cold start fallback; keeps system usable before enough training data
             simple_score = float(np.mean(vector))
             heuristic_anomaly = (
@@ -62,6 +80,6 @@ class AnomalyService:
             )
             return AnomalyResult(score=simple_score, is_anomaly=bool(heuristic_anomaly))
 
-        raw_score = float(self._model.score_samples(vector)[0])
-        pred = int(self._model.predict(vector)[0])
+        raw_score = float(model.score_samples(vector)[0])
+        pred = int(model.predict(vector)[0])
         return AnomalyResult(score=raw_score, is_anomaly=(pred == -1))

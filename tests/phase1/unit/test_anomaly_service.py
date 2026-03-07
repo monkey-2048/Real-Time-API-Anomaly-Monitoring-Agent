@@ -32,7 +32,7 @@ def test_anomaly_service_cold_start_heuristic_flags_extreme():
 def test_anomaly_service_can_fit_and_score():
     svc = AnomalyService()
     baseline = [make_obs(i, temp=24.0 + (i % 3), pm25=18.0 + (i % 4)) for i in range(30)]
-    svc.fit(baseline)
+    svc.fit(baseline, source="weather")
 
     normal = make_obs(999, temp=25.0, pm25=20.0)
     result = svc.score(normal)

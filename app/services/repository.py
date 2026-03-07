@@ -76,6 +76,15 @@ class ObservationRepository:
         stmt = select(Observation).order_by(Observation.observed_at.desc()).limit(limit)
         return self.db.execute(stmt).scalars().all()
 
+    def recent_for_training_by_source(self, source: str, limit: int = 200) -> Sequence[Observation]:
+        stmt = (
+            select(Observation)
+            .where(Observation.source == source)
+            .order_by(Observation.observed_at.desc())
+            .limit(limit)
+        )
+        return self.db.execute(stmt).scalars().all()
+
     def latest_by_source(self, source: str) -> Observation | None:
         stmt = (
             select(Observation)

@@ -16,11 +16,11 @@ class ObservationProcessor:
     def __init__(self, anomaly_service: AnomalyService) -> None:
         self.anomaly_service = anomaly_service
 
-    def _fit_if_needed(self, repo: ObservationRepository) -> None:
-        if self.anomaly_service.is_fitted:
+    def _fit_if_needed(self, repo: ObservationRepository, source: str) -> None:
+        if self.anomaly_service.is_source_fitted(source):
             return
 
-        rows = repo.recent_for_training(limit=300)
+        rows = repo.recent_for_training_by_source(source=source, limit=300)
         samples = [
             ObservationIn(
                 source=r.source,
@@ -38,13 +38,13 @@ class ObservationProcessor:
             )
             for r in rows
         ]
-        self.anomaly_service.fit(samples)
+        self.anomaly_service.fit(samples, source=source)
 
     def process(self, payload: dict, db: Session):
         obs = ObservationIn.model_validate(payload)
 
         repo = ObservationRepository(db)
-        self._fit_if_needed(repo)
+        self._fit_if_needed(repo, source=obs.source)
         anomaly = self.anomaly_service.score(obs)
 
         result = ObservationProcessResult(
