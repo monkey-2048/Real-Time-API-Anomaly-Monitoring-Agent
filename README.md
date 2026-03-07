@@ -1,6 +1,7 @@
-﻿# EnvPulse
+﻿# Real-Time-API-Anomaly-Monitoring-Agent
 
-EnvPulse is an AI-assisted environmental monitoring prototype designed for interview demos. It periodically collects weather and air-quality signals from public APIs, normalizes and queues jobs, processes them asynchronously, writes observations idempotently, detects anomalies with IsolationForest, and exposes report endpoints via FastAPI.
+
+An AI-assisted environmental monitoring prototype designed for interview demos. It periodically collects weather and air-quality signals from public APIs, normalizes and queues jobs, processes them asynchronously, writes observations idempotently, detects anomalies with IsolationForest, and exposes report endpoints via FastAPI.
 
 ## 1. Project Overview
 
