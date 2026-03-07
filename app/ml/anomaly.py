@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 
 import numpy as np
 from sklearn.ensemble import IsolationForest
@@ -29,10 +30,14 @@ class AnomalyService:
     def _vector_for_source(obs: ObservationIn) -> list[float]:
         # Source-specific vectors avoid mixing weather-null and AQ-null features.
         if obs.source == "weather":
+            hour = float(obs.observed_at.hour)
+            hour_angle = 2 * math.pi * (hour / 24.0)
             return [
                 float(obs.temperature or 0.0),
                 float(obs.humidity or 0.0),
                 float(obs.wind_speed or 0.0),
+                math.sin(hour_angle),
+                math.cos(hour_angle),
             ]
         if obs.source == "air_quality":
             return [
