@@ -145,3 +145,46 @@ Tracked examples:
 - lightweight and fast
 - no labels required
 - robust enough for interview-scale anomaly demo
+
+## 13. Core Requirement Verification
+
+Use these steps to explicitly verify key engineering requirements:
+
+1. Verify idempotency:
+   - Start stack with `docker compose up --build`
+   - Call `GET /report/summary` and note `total_observations`
+   - Run `docker compose exec api python -m scripts.seed_sample_data` twice
+   - Call `GET /report/summary` again and confirm rows are upserted (no duplicate growth from same composite key)
+
+2. Verify scaling:
+   - Start an extra worker: `docker compose up -d --scale worker=2`
+   - Watch `docker compose logs --tail=100 worker`
+   - Confirm queue drains normally and jobs are processed by multiple workers
+
+3. Verify anomaly detection:
+   - Call `GET /anomalies?limit=20`
+   - Confirm anomaly records include `anomaly_score` and `is_anomaly=true`
+
+4. Verify source failure handling:
+   - Stop scheduler container and restart with invalid air-quality URL for test, or temporarily block network to AQ source
+   - Observe logs and `GET /metrics`
+   - Confirm fallback behavior is triggered and pipeline continues instead of full stop
+
+## 14. Demo Flow (Video / Live)
+
+Use this fixed order for a clean demo:
+
+1. One-sentence project intro
+2. Architecture flow (`Scheduler -> Queue -> Worker -> DB -> API`)
+3. Start docker compose
+4. Show `/health` and `/metrics`
+5. Show `/observations` and `/anomalies`
+6. Re-run seed/same data to show idempotency
+7. Scale workers and explain horizontal processing
+8. Show AI advice endpoint and frontend button flow
+
+## 15. AI vs Manual Contribution
+
+- Architecture, queue design, idempotency strategy, anomaly workflow, and system integration decisions were designed and implemented by me.
+- AI assistance was used for wording refinement, boilerplate acceleration, and minor implementation speed-up.
+- Core backend behavior, reliability design, and verification logic are my own engineering decisions.
