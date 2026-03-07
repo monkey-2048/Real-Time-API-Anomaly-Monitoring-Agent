@@ -99,20 +99,6 @@ Gemini setup:
 - frontend: click `Get AI Advice` to request Gemini suggestions on demand
 - set `GEMINI_MODEL=gemini-2.5-flash` for current available model support
 
-Gemini testing:
-- direct API test:
-  ```bash
-  curl http://127.0.0.1:18080/report/advice
-  ```
-- PowerShell test:
-  ```powershell
-  Invoke-RestMethod -Uri "http://127.0.0.1:18080/report/advice" -Method Get | ConvertTo-Json -Depth 6
-  ```
-- fallback simulation (no Gemini cost):
-  1. set `GEMINI_API_KEY=` (empty) in `.env`
-  2. restart services
-  3. call `/report/advice` and verify `"model": "fallback-rule"`
-
 ## 8. Idempotency Design
 
 Observation table has unique constraint:
